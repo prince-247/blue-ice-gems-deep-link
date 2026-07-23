@@ -48,10 +48,13 @@ export default function handler(req, res) {
       // After delay, fallback if app didn’t open
       setTimeout(() => {
         if (!hasVisibilityChanged) {
-          // Always fall back to the actual product page on the web.
-          // (Previously Android went to the Play Store instead of the
-          // product page here — that's a separate bug from the DNS issue.)
-          window.location.replace(webUrl);
+          if (isIOS) {
+            window.location.replace(webUrl);  // ✅ open website if app not installed
+          } else if (isAndroid) {
+            window.location.replace(playStore);
+          } else {
+            window.location.replace(webUrl);
+          }
         }
       }, timeout);
     }
